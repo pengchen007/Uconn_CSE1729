@@ -1,0 +1,36 @@
+(+ 4 8 15 16 23 42)
+(+ (* 653 854 321)
+   (* 241 304 201))
+(/ (+ 5 4 (- 2
+             (- 3
+                (+ 6
+                   (/ 4 5)))))
+   (* 3 (- 6 2) (- 2 7)))
+
+"proble 1"
+"a"
+(define (absolute x)
+  (if (>= x 0)
+      x
+      (- 0 x)))
+(absolute 5)
+(absolute -6)
+"b"
+(define (convert-FtoC x)
+  (* (/ 5 9) (- x 32)))
+(convert-FtoC 68)
+(define (convert-CtoF x)
+  (+ (* (/ 9 5) x) 32))
+(convert-CtoF 20)
+"c"
+(define (discount p d)
+  (- p (* p d)))
+(discount 100 0.1)
+"d"
+(define (tip p)
+  (+ p (* p 0.15)))
+(tip 100)
+"e"
+"3"
+"a"
+

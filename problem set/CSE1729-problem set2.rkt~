@@ -1,0 +1,55 @@
+(define (square n) (* n n))
+(define (sum-of-first-n-positive-number n)
+  (if (= n 0)
+      0
+      (+  (sum-of-first-n-positive-number (- n 1)) (square n))))
+(sum-of-first-n-positive-number 1)
+(sum-of-first-n-positive-number 2)
+(sum-of-first-n-positive-number 3)
+(sum-of-first-n-positive-number 4)
+(sum-of-first-n-positive-number 5)
+
+
+(define (sum-of-first-n-even-number n)
+  (if (= n 0)
+      0
+      (+ (sum-of-first-n-even-number (- n 1)) (* 2 n))))
+
+(sum-of-first-n-even-number 1)
+(sum-of-first-n-even-number 2)
+(sum-of-first-n-even-number 3)
+(sum-of-first-n-even-number 4)
+(sum-of-first-n-even-number 5)
+
+
+(define (recursive k)
+  (if (= k 2)
+      (/ 1 2)
+      (* (recursive (- k 1)) (- 1 (/ 1 k)))))
+(recursive 2)
+(recursive 3)
+(recursive 4)
+(recursive 5)
+(recursive 6)
+
+
+"4"
+(define (sum-of-first-k-terms-infinite-series k)
+  (if (= k 0)
+      0
+      (+ (sum-of-first-k-terms-infinite-series (- k 1))
+         (- (/ 4
+               (- (* 4 k)
+                  3))
+            (/ 4
+               (- (* 4 k)
+                  1)))
+        )
+    )
+)
+
+(sum-of-first-k-terms-infinite-series 1)
+(sum-of-first-k-terms-infinite-series 2)
+(sum-of-first-k-terms-infinite-series 3)
+(sum-of-first-k-terms-infinite-series 4)
+(sum-of-first-k-terms-infinite-series 5)

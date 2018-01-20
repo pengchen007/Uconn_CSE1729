@@ -1,0 +1,191 @@
+(define (make-tree value left right)
+  (list value left right))
+(define (value h) (car h))
+(define (left h) (cadr h))
+(define (right h) (caddr h))
+"final practice"
+"problem 1"
+"b"
+
+
+"c"
+(define (duplicates? L)
+  (define (in-the-list a l)
+    (cond ((null? l) #f)
+          ((eq? a (car l)) #t)
+          (else (in-the-list a (cdr l)))))
+  (cond ((null? L) #f)
+        (else (in-the-list (car L) (cdr L)))))
+
+(duplicates? '(1 2 3 4 5 6))
+(duplicates? '(1 2 3 4 5 6 1 2 3))
+
+
+"d"
+(define (fiblist n)
+  (cond ((eq? n 1) '(0))
+        ((eq? n 2) '(1 0))
+        ((>= n 3) (append (list (+ (car (fiblist (- n 1)))
+                                   (cadr (fiblist (- n 1)))))
+                          (fiblist (- n 1))))))
+
+(fiblist 1)
+(fiblist 2)
+(fiblist 3)
+(fiblist 15)
+
+(define (evens n)
+  (cons (* 2 n)
+        (delay (evens (force n)))))
+
+
+(define (stream-ex start)
+  (cons start
+        (delay (stream-ex (+ start 1)))))
+"problem 3"
+(define test-heap (make-tree 3
+                     (make-tree 5
+                                (make-tree 8 '() '())
+                                (make-tree 10 '() '()))
+                     (make-tree 6
+                                (make-tree 11 '() '())
+                                (make-tree 15 '() '()))))
+test-heap
+"a"
+(define (heap-min h) (value h))
+"b"
+(define (heap-insert x h)
+  (if (null? h) (make-tree x '() '())
+      (let ((child-value (max x (value h)))
+            (root-value (min x (value h))))
+        (make-tree root-value
+                   (heap-insert child-value (right h))
+                   (left h)))))
+(heap-insert 7 test-heap)
+"c"
+(define (remove-min H)
+  (define (combine h1 h2)
+    (cond ((null? h1) h2)
+          ((null? h2) h1)
+          ((< (value h1) (value h2))
+           (make-tree (value h1)
+                      h2
+                      (combine (left h1) (right h1))))
+          (else (make-tree (value h2)
+                           h1
+                           (combine (left h2) (right h2))))))
+  (combine (left H) (right H)))
+
+(remove-min test-heap)
+"d"
+(define (extract-h H)
+  (if (null? H)
+      '()
+      (cons (value H)
+            (extract-h (remove-min H)))))
+(extract-h test-heap)
+
+"problem 4"
+"a"
+(define (make-set)
+  (let ((s '())
+        (size 0))
+    (define (empty?) (null? s))
+    (define (insert x) (set! s (cons x s)) (set! size (+ size 1)))
+    (define (member? x)
+      (define (helper l)
+        (cond ((null? l) #f)
+              ((eq? (car l)) #t)
+              (else (help (cdr l)))))
+      (helper s))
+    (define (dispatcher method)
+      (cond ((eq? method 'empty?) empty?)
+            ((eq? method 'insert) insert)
+            ((eq? method 'member?) member?)))
+    dispatcher))
+
+(define new-set (make-set))
+((new-set 'empty?))
+((new-set 'insert) 6)
+
+
+"dequeue 的用法，插入或者取走一个元素在前面或者后面"
+
+"make queue"
+(define (make-queue)
+  (let ((head '())
+        (tail '()))
+    (define (value n) (car n))
+    (define (next n) cdr n)
+    (define (empty?) (null? head))
+    (define (front) (value head))
+    (define (enqueue x)
+      (let ((new-node (cons x '())))
+        (begin
+          (if (empty?)
+              (set! head new-node)
+              (set-cdr! tail new-node))
+          (set! tail new-node))))
+
+    (define (dispatcher method)
+      (cond ((eq? method 'empty?) empty?)
+            ((eq? method 'enqueue) enqueue)))
+    dispatcher))
+(define v (make-queue))
+((v 'enqueue) 3)
+
+(define (integers a b)
+  (if (< b a)
+      '()
+      (cons a (integers (+ a 1) b))))
+(integers 3 9)
+(integers 3 3)
+(integers 9 3)
+
+
+(define (filter f L)
+  (cond ((null? L) L)
+        ((f (car L)) (cons (car L) (filter f (cdr L))))
+        (else (filter f (cdr L)))))
+(filter even? (integers 1 20))
+"vector sum functionally"
+(define (vector-sum v)
+  (define (sum-accumulate i)
+    (if (>= i (vector-length v))
+        0
+        (+ (vector-ref v i)
+           (sum-accumulate (+ i 1)))))
+  (sum-accumulate 0))
+
+(vector-sum (vector 1 2 3 4 5))
+
+"vector sum destructively"
+(define (vector-sum-d v)
+  (let ((result 0))
+    (do ((index 0 (+ index 1)))
+      ((>= index (vector-length v)) result)
+      (set! result
+            (+ result (vector-ref v index))))))
+(vector-sum-d (vector 1 2 3 4 5))
+"inner product"
+(define (vector-product v1 v2)
+  (let ((sp 0))
+    (do ((index 0 (+ index 1)))
+      ((>= index (vector-length v1)) sp)
+      (set! sp (+ sp (* (vector-ref v1 index)
+                        (vector-ref v2 index)))))))
+(vector-product (vector 1 2 3) (vector 4 5 6))
+
+"sum of square"
+(define (sum-square v)
+  (vector-product v v))
+(sum-square (vector 1 2 3))
+
+"vector-average"
+(define (vector-average v)
+  (/ (vector-sum v)
+     (vector-length v)))
+(vector-average (vector 1 2 3 4 5))
+
+
+

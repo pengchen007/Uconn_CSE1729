@@ -1,0 +1,163 @@
+;Peng Chen
+;problem set 8
+;4/2/2017
+
+(define (make-tree value left right)
+  (list value left right))
+(define (value T) (car T))
+(define (right T) (caddr T))
+(define (left T) (cadr T))
+
+(define Tree (make-tree 6 
+                        (make-tree 3
+                                    (make-tree 1 '() '())
+                                    (make-tree 4 '() '()))
+                        (make-tree 8
+                                   (make-tree 7 '() '())
+                                   (make-tree 10
+                                              (make-tree  9 '() '())
+                                              (make-tree 15
+                                                         (make-tree 12 '() '())
+                                                         (make-tree 16 '() '()))))))
+
+(define Tree2 (make-tree 5 
+                        (make-tree 3
+                                    (make-tree 1 '() '())
+                                    (make-tree 4 '() '()))
+                        (make-tree 7
+                                   (make-tree 6 '() '())
+                                   (make-tree 9
+                                              (make-tree  8 '() '())
+                                              (make-tree 10 '() '())))))
+
+
+
+"problem 1"
+(define (num->list n)
+  (define (num->listhelper n l)
+    (cond ((< n 10) (cons n l))
+          (else (num->listhelper (floor (/ n 10)) (cons (modulo n 10) l)))))
+  (num->listhelper n '()))
+
+(define (list->num l)
+  (define (list->numhelper l n)
+    (cond ((null? l) 0)
+          (else (+ (* (car l) (expt 10 (- (length l) 1)))
+                   (list->numhelper (cdr l) n)))))
+  (list->numhelper l 0))
+
+(define (apa-add lst1 lst2)
+  (num->list (+ (list->num lst1)(list->num lst2))))
+;test case
+(apa-add '(1 2 3 5) '(2 3 4 5 5))
+;when I run the testcase I got:
+;(2 4 6 9 0)
+
+"problem 2"
+(define (d-multiply lst n)
+  (if (null? lst)
+      '()
+      (num->list (* (list->num lst) n))))
+;test case
+(d-multiply '(1 2 3) 3)
+;when I run the testcase I got:
+;(3 6 9)
+
+"problem 3"
+(define (last-element l) 
+  (if (null? (cdr l))
+      (car l)
+      (last-element (cdr l))))
+
+(define (remove-last l)
+    (if (null? (cdr l))
+        '()
+        (cons (car l) (remove-last (cdr l)))))
+
+(define (multiply num1 num2)
+  (if (null? (cdr (num->list num2)))
+      (* num1 (car (num->list num2)))
+      (+ (* num1 (last-element (num->list num2)))
+         (* 10 (multiply num1 (list->num (remove-last (num->list num2))))))))
+;test case
+(multiply 123 516)
+;when I run the testcase I got:
+;63468
+
+"problem 4"
+(define (rotate-left T)
+  (if (null? T)
+      T
+      (make-tree (value (left T))(left (left T))
+                 (make-tree (value T)(right (left T))(right T)))))
+(define (rotate-right T)
+  (if (null? T)
+      T
+      (make-tree (value (right T))(make-tree (value T)(left T)(left (right T)))
+                 (right (right T)))))
+(define (tree-depth n)
+  (cond ((null? n) 0)
+        ((>= (tree-depth (left n)) (tree-depth (right n)))(+ 1 (tree-depth (left n))))
+        (else (+ 1 (tree-depth (right n))))))
+(define (rotate-lr T)
+  (make-tree (value (right (left T)))
+             (make-tree (value (left T))(left (left T))(left (right (left T))))
+             (make-tree (value T)(right (right (left T)))(right T))))
+(define (rotate-rl T)
+  (make-tree (value (left (right T)))
+             (make-tree (value T)(left T)(left (left (right T))))
+             (make-tree (value (right T))(right (left (right T)))(right (right T)))))
+(define (tree-repair T)
+  (define (factor T)
+    (- (tree-depth (right T))(tree-depth (left T))))
+  (let ((tree-factor (factor T)))
+    (cond ((> tree-factor 1)
+           (if (< (factor (right T)) 0)
+               (rotate-rl T)
+               (rotate-right T)))
+          ((< tree-factor -1)
+           (if (> (factor (left T)) 0)
+               (rotate-lr T)
+               (rotate-left T)))
+          (else T))))
+
+;test case
+(tree-repair Tree)
+(tree-repair Tree2)
+;when I run the testcase I got:
+;(8 (6 (3 (1 () ()) (4 () ())) (7 () ())) (10 (9 () ()) (15 (12 () ()) (16 () ()))))
+;(5 (3 (1 () ()) (4 () ())) (7 (6 () ()) (9 (8 () ()) (10 () ()))))
+
+"problem 5"
+(define (insert-heap v H)
+  (if (null? H) (make-tree v '() '())
+      (let ((root-value (min v (value H)))
+            (child-value (max v (value H))))
+        (make-tree root-value
+                   (insert-heap child-value (left H))
+                   (right H)))))
+
+
+
+(define (insert-heap-list l H)
+  (if (null? l)
+      H
+      (insert-heap-list (cdr l)
+                        (insert-heap (car l) H))))
+
+(define (sort-extract H)
+  (if (null? H)
+      '()
+      (append (list (value H))
+              (sort-extract (left H))
+              (sort-extract (right H)))))
+;test case:                          
+(sort-extract (insert-heap-list '(6 5 7 3 5 9 3 1 2) '()))
+;when I run the testcase I got:
+;(1 2 3 3 5 5 6 7 9)
+
+          
+
+
+
+

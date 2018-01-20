@@ -1,0 +1,50 @@
+;;Peng Chen
+;;Peoblem set 4
+
+;;problem 1
+
+(define (sum f n)
+  (if (= n 0)
+      (f 0)
+      (+ (f n) (sum f (- n 1)))))
+(define (f1 x)
+  (if (= x 0)
+      0
+      (/ 1.0 x)))
+
+
+
+;;problem 2
+;;a
+(define (der f h)
+  (lambda (x) (/ (- (f (+ x h)) (f x)) h)))
+
+;;test case
+(define (f x) (+ x 1))
+((der f 0.01) 2)
+
+;;b
+(define (app-der f h n)
+  (if (= n 0)
+      f
+      (app-der (der f h) h (- n 1))))
+
+;;test case
+(define (g x) (* x x x))
+((app-der (der g 0.01) 0.01 3) 3)
+
+;;c
+
+(require plot)
+(plot (function (der sin 0.5) (- pi) pi #:label "sine x"))
+(plot (function cos(- pi) pi #:label "cos"))
+
+
+
+
+
+
+
+
+
+

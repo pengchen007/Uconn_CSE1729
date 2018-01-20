@@ -1,0 +1,38 @@
+(* (+ 22 42) (* 54 99))
+
+(* 99
+   (* 54
+      (+ 22 42)))
+
+(+ (* 62 102) (* 16 (/ 44 22)))
+
+(define (inc x) (+ x 1))
+(define (inc2 x) (inc (inc x)))
+(inc2 3)
+
+
+
+(define (square x) (* x x))
+(define (fourth x) (square (square x)))
+(fourth 2)
+
+(define (a x ) (+ (square x) 1))
+(define (b x) (+ (* (fourth x) 16) 22))
+(define (p x) (* (fourth (a x)) (square (b x))))
+(p 1)
+
+(define (sixteenth x) (square (fourth x)))
+(sixteenth 2)
+
+(define (two-hundred-fifth-sixth x) (square (sixteenth x)))
+(two-hundred-fifth-sixth 1.01)
+
+
+
+
+(define (factorial x)
+  (if (= x 0)
+       1
+       (* x (factorial (- x 1)))
+  ))
+(factorial 2)

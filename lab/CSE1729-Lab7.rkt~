@@ -1,0 +1,78 @@
+;problem 1
+(define (list-sum l)
+  (define (list-accumulate l a)
+    (if (null? l)
+        a
+        (list-accumulate (cdr l) (+ (car l) a))))
+  (list-accumulate l 0))
+
+;test case
+(list-sum '( 89 4 6 3))
+
+;problem 2
+(define (mean l)
+  (/ (list-sum l) (length l)))
+
+;teat case
+(mean '(1 2 3 4 5))
+
+
+;problem 3
+(define (make-pair a b) (cons a b))
+(define (first p) (car p))
+(define (second p) (cdr p))
+(define (partition l pivot left right)
+  (cond ((null? l) (make-pair left right))
+        ((< (car l) pivot) (partition (cdr l)
+                                      pivot
+                                      (cons (car l) left)
+                                      right))
+        (else               (partition (cdr l)
+                                       pivot
+                                       left
+                                       (cons (car l) right)))))
+(define (qsort l)
+  (if (null? l)
+      l
+      (let* ((pivot (car l))
+             (parts (partition (cdr l) pivot '() '()))
+             (left (qsort (first parts)))
+             (right (qsort (second parts))))
+        (append left (cons pivot right)))))
+
+
+(define (list-median l)
+  (define (list-at l i)
+    (if (= i 0)
+    (car l)
+    (list-at (cdr l) (- i 1))))
+  (define (is-even? x) (= (modulo x 2) 0))
+  (let ((sorted (qsort l)))
+    (if (is-even? (length l))
+        (/ (+ (list-at sorted (floor (/ (length l) 2)))
+              (list-at sorted (- (floor (/ (length l) 2)) 1)))
+           2)
+        (list-at sorted (floor (/ (length l) 2))))))
+
+
+(qsort '(2 3 1 6 5 9 7 3 6 1 8 6 4))
+
+(list-median '(2 3 1 6 5 9 7 3 6 1 8 6 4))
+
+
+
+;problem 4
+(define (list-variance l)
+  (define (square x) (* x x))
+  (let* ((average (mean l))
+         (v-list (map (lambda (x) (square (- x average))) l)))
+    (/ (list-sum v-list) (length l))))
+
+(list-variance '(1 2 3 4 5))
+
+
+;problem 5
+(define (list-stddev l)
+  (sqrt (list-variance l)))
+(list-stddev '(1 2 3 4 5))
+

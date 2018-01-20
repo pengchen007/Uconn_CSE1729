@@ -1,0 +1,63 @@
+(define (make-tree value left right)
+  (list value left right))
+
+
+(define (value T) (car T))
+(define (right T) (caddr T))
+(define (left T) (cadr T))
+
+
+(define (insert x T)
+  (cond ((null? T) (make-tree x '() '()))
+        ((eq? x (value T)) T)
+        ((< x (value T)) (make-tree (value T)
+                                    (insert x (left T))
+                                    (right T)))
+        ((> x (value T)) (make-tree (value T)
+                                    (left T)
+                                    (insert x (right T))))))
+
+
+;1
+(define T
+  (make-tree 6
+             (make-tree 3
+                        (make-tree 2
+                                   (make-tree 1 '() '())
+                                   (make-tree 3 '() '()))
+                        (make-tree 5 '() '()))
+             (make-tree 8
+                        (make-tree 7 '() '())
+                        (make-tree 9 '() '()))))
+t
+
+(define (tree-depth T)
+  (if (null? T) 0
+        (let ((left_d (tree-depth (left T))) (right_d (tree-depth (right T))))
+        (if (> left_d right_d) (+ 1 left_d)
+             (+ 1 right_d)))))
+
+(tree-depth T)
+
+
+;2
+
+(define (occurences-in-tree v T)
+  (define (value-at-root? T)
+    (if (eq? (car T) v) 1 0))
+  (if (null? T)
+      0
+      (+ (value-at-root? T)
+         (occurences-in-tree v (left T))
+         (occurences-in-tree v (right T)))))
+
+(occurences-in-tree 3 T)
+
+;3
+(define (count-one-child T)
+  (cond ((null? T) 0)
+        ((and (null? (left T)) (null? (right T))) 0)
+        ))
+
+
+

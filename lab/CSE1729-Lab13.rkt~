@@ -1,0 +1,57 @@
+;Peng Chen
+;Lab 13
+;4/25/2017
+"problem 1"
+
+(define (make-queue maxsize)
+  (let ((new-queue (make-vector maxsize))
+        (front 0)
+        (back 0))
+    (define (empty?) (eq? front back))
+    (define (enqueue x)
+      (vector-set! new-queue back x)
+      (set! back (+ back 1)))
+    (define (dequeue)
+      (let ((m (vector-ref new-queue front)))
+        (begin
+          (vector-set! new-queue front 0)
+          (set! front (+ front 1)))
+          m))
+    (define (show) new-queue)
+    (define (dispatcher method)
+      (cond ((eq? method 'empty?) empty?)
+            ((eq? method 'enqueue) enqueue)
+            ((eq? method 'dequeue) dequeue)
+            ((eq? method 'show) show)))
+    dispatcher))
+
+;test case
+(define v (make-queue 20))
+((v 'empty?))
+((v 'enqueue) 3)
+((v 'enqueue) 4)
+((v 'enqueue) 5)
+((v 'enqueue) 6)
+((v 'show))
+((v 'empty?))
+((v 'dequeue))
+((v 'dequeue))
+((v 'dequeue))
+((v 'dequeue))
+((v 'show))
+((v 'empty?))
+;when I run the test case I got
+;#t
+;#(3 4 5 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+;#f
+;3
+;4
+;5
+;6
+;#(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
+;#t
+
+
+
+
+
